@@ -1,13 +1,13 @@
 package model
 
-type typeOf int
+type cellType int
 
 const (
-	none typeOf = iota
-	target
-	wall
+	CellTypeNone cellType = iota
+	CellTypeTarget
+	CellTypeWall
 )
 
 type Cell struct {
-	typeOf typeOf
+	TypeOf cellType
 }

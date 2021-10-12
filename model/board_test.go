@@ -30,28 +30,28 @@ func TestNewBoard(t *testing.T) {
 	assert.Equal(t, 1, board.Rocks[1].Y)
 
 	// top left
-	cell := board.get(0, 0)
-	assert.Equal(t, none, cell.typeOf)
+	cell := board.Get(0, 0)
+	assert.Equal(t, CellTypeNone, cell.TypeOf)
 
 	// top right
-	cell = board.get(3, 0)
-	assert.Equal(t, wall, cell.typeOf)
+	cell = board.Get(3, 0)
+	assert.Equal(t, CellTypeWall, cell.TypeOf)
 
 	// middle row
-	cell = board.get(0, 1)
-	assert.Equal(t, none, cell.typeOf)
-	cell = board.get(1, 1)
-	assert.Equal(t, none, cell.typeOf)
-	cell = board.get(2, 1)
-	assert.Equal(t, target, cell.typeOf)
-	cell = board.get(3, 1)
-	assert.Equal(t, none, cell.typeOf)
+	cell = board.Get(0, 1)
+	assert.Equal(t, CellTypeNone, cell.TypeOf)
+	cell = board.Get(1, 1)
+	assert.Equal(t, CellTypeNone, cell.TypeOf)
+	cell = board.Get(2, 1)
+	assert.Equal(t, CellTypeTarget, cell.TypeOf)
+	cell = board.Get(3, 1)
+	assert.Equal(t, CellTypeNone, cell.TypeOf)
 
 	// bottom left
-	cell = board.get(0, 2)
-	assert.Equal(t, wall, cell.typeOf)
+	cell = board.Get(0, 2)
+	assert.Equal(t, CellTypeWall, cell.TypeOf)
 
 	// bottom right
-	cell = board.get(3, 2)
-	assert.Equal(t, none, cell.typeOf)
+	cell = board.Get(3, 2)
+	assert.Equal(t, CellTypeNone, cell.TypeOf)
 }

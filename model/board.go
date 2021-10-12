@@ -26,9 +26,9 @@ func NewBoard(cellData []string) *Board {
 			case 'R':
 				board.Rocks = append(board.Rocks, NewRock(x, y))
 			case 'T':
-				cell.typeOf = target
+				cell.TypeOf = CellTypeTarget
 			case 'W':
-				cell.typeOf = wall
+				cell.TypeOf = CellTypeWall
 			}
 			board.Cells[y][x] = cell
 		}
@@ -37,6 +37,6 @@ func NewBoard(cellData []string) *Board {
 	return &board
 }
 
-func (b *Board) get(x, y int) Cell {
+func (b *Board) Get(x, y int) Cell {
 	return b.Cells[y][x]
 }
