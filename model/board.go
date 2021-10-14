@@ -2,7 +2,7 @@ package model
 
 type Board struct {
 	Width, Height int
-	Cells         [][]Cell
+	Cells         []Cell
 	Player        *Player
 }
 
@@ -13,10 +13,7 @@ func NewBoard(mapData string, boardWidth, boardHeight int) *Board {
 	b.Width = boardWidth
 	b.Height = boardHeight
 
-	b.Cells = make([][]Cell, b.Height)
-	for y := range b.Cells {
-		b.Cells[y] = make([]Cell, b.Width)
-	}
+	b.Cells = make([]Cell, b.Width*b.Height)
 
 	for y := 0; y < b.Height; y++ {
 		for x := 0; x < b.Width; x++ {
@@ -38,7 +35,7 @@ func NewBoard(mapData string, boardWidth, boardHeight int) *Board {
 				cell.TypeOf = CellTypeGoal
 				cell.Box = true
 			}
-			b.Cells[y][x] = cell
+			b.Cells[(y*b.Width)+x] = cell
 		}
 	}
 
@@ -47,5 +44,5 @@ func NewBoard(mapData string, boardWidth, boardHeight int) *Board {
 
 // Get - Returns the cell at the given location
 func (b *Board) Get(x, y int) *Cell {
-	return &b.Cells[y][x]
+	return &b.Cells[(y*b.Width)+x]
 }
