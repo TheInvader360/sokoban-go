@@ -8,16 +8,17 @@ type Model struct {
 func NewModel() *Model {
 	m := Model{}
 
+	// Player "@", Box "$", Goal ".", Wall "#", Goal+Player "+", Goal+Box "*", None " ")
 	mapData := []string{
-		"WWWWWWWWW",
-		"W    TTTW",
-		"W W WTWTW",
-		"W W  TTTW",
-		"W RRR W W",
-		"W RPR   W",
-		"W RRRWW W",
-		"W       W",
-		"WWWWWWWWW",
+		"#########",
+		"#    ..*#",
+		"# # #.#.#",
+		"# #  ...#",
+		"# $$$ # #",
+		"# $@$   #",
+		"#  $$## #",
+		"#       #",
+		"#########",
 	}
 
 	m.Board = NewBoard(mapData)

@@ -4,10 +4,9 @@ type Board struct {
 	Width, Height int
 	Cells         [][]Cell
 	Player        *Player
-	Rocks         []*Rock
 }
 
-// NewBoard - Creates a board from a slice of strings ([P]layer start position / [R]ock start position / [T]arget / [W]all)
+// NewBoard - Creates a board from a slice of strings (Player "@", Box "$", Goal ".", Wall "#", Goal+Player "+", Goal+Box "*", None " ")
 func NewBoard(mapData []string) *Board {
 	b := Board{}
 
@@ -21,14 +20,20 @@ func NewBoard(mapData []string) *Board {
 			code := mapData[y][x]
 			cell := Cell{}
 			switch code {
-			case 'P':
+			case '@':
 				b.Player = NewPlayer(x, y)
-			case 'R':
-				b.Rocks = append(b.Rocks, NewRock(x, y))
-			case 'T':
-				cell.TypeOf = CellTypeTarget
-			case 'W':
+			case '$':
+				cell.Box = true
+			case '.':
+				cell.TypeOf = CellTypeGoal
+			case '#':
 				cell.TypeOf = CellTypeWall
+			case '+':
+				cell.TypeOf = CellTypeGoal
+				b.Player = NewPlayer(x, y)
+			case '*':
+				cell.TypeOf = CellTypeGoal
+				cell.Box = true
 			}
 			b.Cells[y][x] = cell
 		}

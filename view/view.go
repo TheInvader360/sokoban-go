@@ -29,10 +29,11 @@ func NewView(m *model.Model, imd *imdraw.IMDraw, width, height int) *View {
 func (v *View) Draw() {
 	for y := 0; y < v.m.Board.Height; y++ {
 		for x := 0; x < v.m.Board.Width; x++ {
-			switch v.m.Board.Get(x, y).TypeOf {
+			cell := v.m.Board.Get(x, y)
+			switch cell.TypeOf {
 			case model.CellTypeNone:
 				v.imd.Color = colornames.Grey
-			case model.CellTypeTarget:
+			case model.CellTypeGoal:
 				v.imd.Color = colornames.Limegreen
 			case model.CellTypeWall:
 				v.imd.Color = colornames.Purple
@@ -42,20 +43,20 @@ func (v *View) Draw() {
 				pixel.V(float64(x*16+16), float64(v.height-y*16)),
 			)
 			v.imd.Rectangle(0)
+			if cell.Box {
+				v.imd.Color = colornames.Red
+				v.imd.Push(
+					pixel.V(float64(x*16+2), float64(v.height-y*16-16+2)),
+					pixel.V(float64(x*16+16-2), float64(v.height-y*16-2)),
+				)
+				v.imd.Rectangle(0)
+			}
 		}
-	}
-	for _, rock := range v.m.Board.Rocks {
-		v.imd.Color = colornames.Red
-		v.imd.Push(
-			pixel.V(float64(rock.X*16), float64(v.height-rock.Y*16-16)),
-			pixel.V(float64(rock.X*16+16), float64(v.height-rock.Y*16)),
-		)
-		v.imd.Rectangle(0)
 	}
 	v.imd.Color = colornames.Blue
 	v.imd.Push(
-		pixel.V(float64(v.m.Board.Player.X*16), float64(v.height-v.m.Board.Player.Y*16-16)),
-		pixel.V(float64(v.m.Board.Player.X*16+16), float64(v.height-v.m.Board.Player.Y*16)),
+		pixel.V(float64(v.m.Board.Player.X*16+2), float64(v.height-v.m.Board.Player.Y*16-16+2)),
+		pixel.V(float64(v.m.Board.Player.X*16+16-2), float64(v.height-v.m.Board.Player.Y*16-2)),
 	)
 	v.imd.Rectangle(0)
 }

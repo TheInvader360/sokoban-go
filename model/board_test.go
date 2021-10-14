@@ -8,9 +8,9 @@ import (
 
 func TestNewBoard(t *testing.T) {
 	mapData := []string{
-		" WWW",
-		"PRTR",
-		"WWW?",
+		" ###",
+		"@$.$",
+		"###?",
 	}
 	b := NewBoard(mapData)
 
@@ -18,16 +18,13 @@ func TestNewBoard(t *testing.T) {
 	assert.Equal(t, 4, b.Width)
 	assert.Equal(t, 3, b.Height)
 
-	// player start location
+	// player location
 	assert.Equal(t, 0, b.Player.X)
 	assert.Equal(t, 1, b.Player.Y)
 
-	// rock start locations
-	assert.Equal(t, 2, len(b.Rocks))
-	assert.Equal(t, 1, b.Rocks[0].X)
-	assert.Equal(t, 1, b.Rocks[0].Y)
-	assert.Equal(t, 3, b.Rocks[1].X)
-	assert.Equal(t, 1, b.Rocks[1].Y)
+	// box locations
+	assert.True(t, b.Get(1, 1).Box)
+	assert.True(t, b.Get(3, 1).Box)
 
 	// top left
 	assert.Equal(t, CellTypeNone, b.Get(0, 0).TypeOf)
@@ -38,7 +35,7 @@ func TestNewBoard(t *testing.T) {
 	// middle row
 	assert.Equal(t, CellTypeNone, b.Get(0, 1).TypeOf)
 	assert.Equal(t, CellTypeNone, b.Get(1, 1).TypeOf)
-	assert.Equal(t, CellTypeTarget, b.Get(2, 1).TypeOf)
+	assert.Equal(t, CellTypeGoal, b.Get(2, 1).TypeOf)
 	assert.Equal(t, CellTypeNone, b.Get(3, 1).TypeOf)
 
 	// bottom left
@@ -46,4 +43,25 @@ func TestNewBoard(t *testing.T) {
 
 	// bottom right
 	assert.Equal(t, CellTypeNone, b.Get(3, 2).TypeOf)
+
+	// goal and player
+	mapData = []string{
+		"+",
+	}
+	b = NewBoard(mapData)
+	assert.Equal(t, 0, b.Player.X)
+	assert.Equal(t, 0, b.Player.Y)
+	assert.Equal(t, CellTypeGoal, b.Get(0, 0).TypeOf)
+
+	// goals and boxes
+	mapData = []string{
+		".$*",
+	}
+	b = NewBoard(mapData)
+	assert.Equal(t, CellTypeGoal, b.Get(0, 0).TypeOf)
+	assert.Equal(t, CellTypeNone, b.Get(1, 0).TypeOf)
+	assert.Equal(t, CellTypeGoal, b.Get(2, 0).TypeOf)
+	assert.False(t, b.Get(0, 0).Box)
+	assert.True(t, b.Get(1, 0).Box)
+	assert.True(t, b.Get(2, 0).Box)
 }

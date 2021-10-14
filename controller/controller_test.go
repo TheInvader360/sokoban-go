@@ -16,7 +16,7 @@ func TestNewController(t *testing.T) {
 func TestTryMovePlayer(t *testing.T) {
 	mapData := []string{
 		"  ",
-		" P",
+		" @",
 	}
 	b := model.NewBoard(mapData)
 	m := model.Model{Board: b}
