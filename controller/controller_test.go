@@ -14,11 +14,10 @@ func TestNewController(t *testing.T) {
 }
 
 func TestTryMovePlayer(t *testing.T) {
-	mapData := []string{
-		"  ",
-		" @",
-	}
-	b := model.NewBoard(mapData)
+	mapData := "" +
+		"  " +
+		" @"
+	b := model.NewBoard(mapData, 2, 2)
 	m := model.Model{Board: b}
 	c := Controller{m: &m}
 

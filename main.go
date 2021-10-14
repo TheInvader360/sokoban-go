@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/TheInvader360/sokoban-go/controller"
 	"github.com/TheInvader360/sokoban-go/model"
 	"github.com/TheInvader360/sokoban-go/view"
@@ -69,7 +71,7 @@ func run() {
 		imd.Draw(win)
 		win.Update()
 
-		//time.Sleep(50 * time.Millisecond)
+		time.Sleep(50 * time.Millisecond)
 	}
 }
 

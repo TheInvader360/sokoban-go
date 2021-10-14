@@ -9,19 +9,18 @@ func NewModel() *Model {
 	m := Model{}
 
 	// Player "@", Box "$", Goal ".", Wall "#", Goal+Player "+", Goal+Box "*", None " ")
-	mapData := []string{
-		"#########",
-		"#    ..*#",
-		"# # #.#.#",
-		"# #  ...#",
-		"# $$$ # #",
-		"# $@$   #",
-		"#  $$## #",
-		"#       #",
-		"#########",
-	}
+	mapData := "" +
+		"#########" +
+		"#    ..*#" +
+		"# # #.#.#" +
+		"# #  ...#" +
+		"# $$$ # #" +
+		"# $@$   #" +
+		"#  $$## #" +
+		"#       #" +
+		"#########"
 
-	m.Board = NewBoard(mapData)
+	m.Board = NewBoard(mapData, 9, 9)
 
 	return &m
 }

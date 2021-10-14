@@ -7,12 +7,11 @@ import (
 )
 
 func TestNewBoard(t *testing.T) {
-	mapData := []string{
-		" ###",
-		"@$.$",
-		"###?",
-	}
-	b := NewBoard(mapData)
+	mapData := "" +
+		" ###" +
+		"@$.$" +
+		"###?"
+	b := NewBoard(mapData, 4, 3)
 
 	// board size
 	assert.Equal(t, 4, b.Width)
@@ -45,19 +44,13 @@ func TestNewBoard(t *testing.T) {
 	assert.Equal(t, CellTypeNone, b.Get(3, 2).TypeOf)
 
 	// goal and player
-	mapData = []string{
-		"+",
-	}
-	b = NewBoard(mapData)
+	b = NewBoard("+", 1, 1)
 	assert.Equal(t, 0, b.Player.X)
 	assert.Equal(t, 0, b.Player.Y)
 	assert.Equal(t, CellTypeGoal, b.Get(0, 0).TypeOf)
 
 	// goals and boxes
-	mapData = []string{
-		".$*",
-	}
-	b = NewBoard(mapData)
+	b = NewBoard(".$*", 3, 1)
 	assert.Equal(t, CellTypeGoal, b.Get(0, 0).TypeOf)
 	assert.Equal(t, CellTypeNone, b.Get(1, 0).TypeOf)
 	assert.Equal(t, CellTypeGoal, b.Get(2, 0).TypeOf)

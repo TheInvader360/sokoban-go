@@ -6,32 +6,35 @@ type Board struct {
 	Player        *Player
 }
 
-// NewBoard - Creates a board from a slice of strings (Player "@", Box "$", Goal ".", Wall "#", Goal+Player "+", Goal+Box "*", None " ")
-func NewBoard(mapData []string) *Board {
+// NewBoard - Creates a board (map data encoding: Player "@", Box "$", Goal ".", Wall "#", Goal+Player "+", Goal+Box "*")
+func NewBoard(mapData string, boardWidth, boardHeight int) *Board {
 	b := Board{}
 
-	b.Width = len(mapData[0])
-	b.Height = len(mapData)
+	b.Width = boardWidth
+	b.Height = boardHeight
+
 	b.Cells = make([][]Cell, b.Height)
+	for y := range b.Cells {
+		b.Cells[y] = make([]Cell, b.Width)
+	}
 
 	for y := 0; y < b.Height; y++ {
-		b.Cells[y] = make([]Cell, b.Width)
 		for x := 0; x < b.Width; x++ {
-			code := mapData[y][x]
+			code := string(mapData[(y*b.Width)+x])
 			cell := Cell{}
 			switch code {
-			case '@':
+			case "@":
 				b.Player = NewPlayer(x, y)
-			case '$':
+			case "$":
 				cell.Box = true
-			case '.':
+			case ".":
 				cell.TypeOf = CellTypeGoal
-			case '#':
+			case "#":
 				cell.TypeOf = CellTypeWall
-			case '+':
+			case "+":
 				cell.TypeOf = CellTypeGoal
 				b.Player = NewPlayer(x, y)
-			case '*':
+			case "*":
 				cell.TypeOf = CellTypeGoal
 				cell.Box = true
 			}
