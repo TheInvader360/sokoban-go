@@ -1,7 +1,9 @@
 package main
 
 import (
+	"github.com/TheInvader360/sokoban-go/controller"
 	"github.com/TheInvader360/sokoban-go/model"
+	"github.com/TheInvader360/sokoban-go/view"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
@@ -24,63 +26,50 @@ func run() {
 		panic(err)
 	}
 
-	// initialise model
-	cellData := []string{
-		"WWWWWWWWW",
-		"W    TTTW",
-		"W W WTWTW",
-		"W W  TTTW",
-		"W RRR W W",
-		"W RPR   W",
-		"W RRRWW W",
-		"W       W",
-		"WWWWWWWWW",
-	}
-	board := model.NewBoard(cellData)
-
-	// initialise imdraw
 	imd := imdraw.New(nil)
-
-	win.Clear(colornames.Black)
+	m := model.NewModel()
+	v := view.NewView(m, imd, width, height)
+	c := controller.NewController(m)
+	lastKey := pixelgl.KeyUnknown
 
 	for !win.Closed() {
-		// draw the board
-		imd.Clear()
-		for y := 0; y < board.Height; y++ {
-			for x := 0; x < board.Width; x++ {
-				switch board.Get(x, y).TypeOf {
-				case model.CellTypeNone:
-					imd.Color = colornames.Grey
-				case model.CellTypeTarget:
-					imd.Color = colornames.Limegreen
-				case model.CellTypeWall:
-					imd.Color = colornames.Purple
-				}
-				imd.Push(
-					pixel.V(float64(x*16), float64(height-y*16-16)),
-					pixel.V(float64(x*16+16), float64(height-y*16)),
-				)
-				imd.Rectangle(0)
-			}
+		if win.Pressed(pixelgl.KeyEscape) {
+			return
 		}
-		for _, rock := range board.Rocks {
-			imd.Color = colornames.Red
-			imd.Push(
-				pixel.V(float64(rock.X*16), float64(height-rock.Y*16-16)),
-				pixel.V(float64(rock.X*16+16), float64(height-rock.Y*16)),
-			)
-			imd.Rectangle(0)
-		}
-		imd.Color = colornames.Blue
-		imd.Push(
-			pixel.V(float64(board.Player.X*16), float64(height-board.Player.Y*16-16)),
-			pixel.V(float64(board.Player.X*16+16), float64(height-board.Player.Y*16)),
-		)
-		imd.Rectangle(0)
-		imd.Draw(win)
 
-		// update the window
+		// Fire an event once per key press (no repeats if the key is held down)
+		// Note: JustPressed() is a cleaner way to achieve this, but Pressed() more closely matches the Jack OS API
+		if win.Pressed(pixelgl.KeyUp) {
+			if lastKey != pixelgl.KeyUp {
+				c.TryMovePlayerUp()
+			}
+			lastKey = pixelgl.KeyUp
+		} else if win.Pressed(pixelgl.KeyDown) {
+			if lastKey != pixelgl.KeyDown {
+				c.TryMovePlayerDown()
+			}
+			lastKey = pixelgl.KeyDown
+		} else if win.Pressed(pixelgl.KeyLeft) {
+			if lastKey != pixelgl.KeyLeft {
+				c.TryMovePlayerLeft()
+			}
+			lastKey = pixelgl.KeyLeft
+		} else if win.Pressed(pixelgl.KeyRight) {
+			if lastKey != pixelgl.KeyRight {
+				c.TryMovePlayerRight()
+			}
+			lastKey = pixelgl.KeyRight
+		} else {
+			lastKey = pixelgl.KeyUnknown
+		}
+
+		win.Clear(colornames.Black)
+		imd.Clear()
+		v.Draw()
+		imd.Draw(win)
 		win.Update()
+
+		//time.Sleep(50 * time.Millisecond)
 	}
 }
 

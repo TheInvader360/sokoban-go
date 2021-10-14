@@ -7,36 +7,37 @@ type Board struct {
 	Rocks         []*Rock
 }
 
-// NewBoard - create a board from a slice of strings ([P]layer start position / [R]ock start position / [T]arget / [W]all)
-func NewBoard(cellData []string) *Board {
-	board := Board{}
+// NewBoard - Creates a board from a slice of strings ([P]layer start position / [R]ock start position / [T]arget / [W]all)
+func NewBoard(mapData []string) *Board {
+	b := Board{}
 
-	board.Width = len(cellData[0])
-	board.Height = len(cellData)
-	board.Cells = make([][]Cell, board.Height)
+	b.Width = len(mapData[0])
+	b.Height = len(mapData)
+	b.Cells = make([][]Cell, b.Height)
 
-	for y := 0; y < board.Height; y++ {
-		board.Cells[y] = make([]Cell, board.Width)
-		for x := 0; x < board.Width; x++ {
-			code := cellData[y][x]
+	for y := 0; y < b.Height; y++ {
+		b.Cells[y] = make([]Cell, b.Width)
+		for x := 0; x < b.Width; x++ {
+			code := mapData[y][x]
 			cell := Cell{}
 			switch code {
 			case 'P':
-				board.Player = NewPlayer(x, y)
+				b.Player = NewPlayer(x, y)
 			case 'R':
-				board.Rocks = append(board.Rocks, NewRock(x, y))
+				b.Rocks = append(b.Rocks, NewRock(x, y))
 			case 'T':
 				cell.TypeOf = CellTypeTarget
 			case 'W':
 				cell.TypeOf = CellTypeWall
 			}
-			board.Cells[y][x] = cell
+			b.Cells[y][x] = cell
 		}
 	}
 
-	return &board
+	return &b
 }
 
-func (b *Board) Get(x, y int) Cell {
-	return b.Cells[y][x]
+// Get - Returns the cell at the given location
+func (b *Board) Get(x, y int) *Cell {
+	return &b.Cells[y][x]
 }

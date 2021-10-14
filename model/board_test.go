@@ -7,51 +7,43 @@ import (
 )
 
 func TestNewBoard(t *testing.T) {
-	cellData := []string{
+	mapData := []string{
 		" WWW",
 		"PRTR",
 		"WWW?",
 	}
+	b := NewBoard(mapData)
 
 	// board size
-	board := NewBoard(cellData)
-	assert.Equal(t, 4, board.Width)
-	assert.Equal(t, 3, board.Height)
+	assert.Equal(t, 4, b.Width)
+	assert.Equal(t, 3, b.Height)
 
 	// player start location
-	assert.Equal(t, 0, board.Player.X)
-	assert.Equal(t, 1, board.Player.Y)
+	assert.Equal(t, 0, b.Player.X)
+	assert.Equal(t, 1, b.Player.Y)
 
 	// rock start locations
-	assert.Equal(t, 2, len(board.Rocks))
-	assert.Equal(t, 1, board.Rocks[0].X)
-	assert.Equal(t, 1, board.Rocks[0].Y)
-	assert.Equal(t, 3, board.Rocks[1].X)
-	assert.Equal(t, 1, board.Rocks[1].Y)
+	assert.Equal(t, 2, len(b.Rocks))
+	assert.Equal(t, 1, b.Rocks[0].X)
+	assert.Equal(t, 1, b.Rocks[0].Y)
+	assert.Equal(t, 3, b.Rocks[1].X)
+	assert.Equal(t, 1, b.Rocks[1].Y)
 
 	// top left
-	cell := board.Get(0, 0)
-	assert.Equal(t, CellTypeNone, cell.TypeOf)
+	assert.Equal(t, CellTypeNone, b.Get(0, 0).TypeOf)
 
 	// top right
-	cell = board.Get(3, 0)
-	assert.Equal(t, CellTypeWall, cell.TypeOf)
+	assert.Equal(t, CellTypeWall, b.Get(3, 0).TypeOf)
 
 	// middle row
-	cell = board.Get(0, 1)
-	assert.Equal(t, CellTypeNone, cell.TypeOf)
-	cell = board.Get(1, 1)
-	assert.Equal(t, CellTypeNone, cell.TypeOf)
-	cell = board.Get(2, 1)
-	assert.Equal(t, CellTypeTarget, cell.TypeOf)
-	cell = board.Get(3, 1)
-	assert.Equal(t, CellTypeNone, cell.TypeOf)
+	assert.Equal(t, CellTypeNone, b.Get(0, 1).TypeOf)
+	assert.Equal(t, CellTypeNone, b.Get(1, 1).TypeOf)
+	assert.Equal(t, CellTypeTarget, b.Get(2, 1).TypeOf)
+	assert.Equal(t, CellTypeNone, b.Get(3, 1).TypeOf)
 
 	// bottom left
-	cell = board.Get(0, 2)
-	assert.Equal(t, CellTypeWall, cell.TypeOf)
+	assert.Equal(t, CellTypeWall, b.Get(0, 2).TypeOf)
 
 	// bottom right
-	cell = board.Get(3, 2)
-	assert.Equal(t, CellTypeNone, cell.TypeOf)
+	assert.Equal(t, CellTypeNone, b.Get(3, 2).TypeOf)
 }
