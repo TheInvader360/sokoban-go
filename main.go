@@ -33,6 +33,7 @@ func run() {
 	v := view.NewView(m, imd, width, height)
 	c := controller.NewController(m)
 	lastKey := pixelgl.KeyUnknown
+	c.SkipLevel()
 
 	for !win.Closed() {
 		if win.Pressed(pixelgl.KeyEscape) {
@@ -61,11 +62,21 @@ func run() {
 				c.TryMovePlayerRight()
 			}
 			lastKey = pixelgl.KeyRight
+		} else if win.Pressed(pixelgl.KeyR) {
+			if lastKey != pixelgl.KeyR {
+				c.RestartLevel()
+			}
+			lastKey = pixelgl.KeyR
+		} else if win.Pressed(pixelgl.KeyS) {
+			if lastKey != pixelgl.KeyS {
+				c.SkipLevel()
+			}
+			lastKey = pixelgl.KeyS
 		} else {
 			lastKey = pixelgl.KeyUnknown
 		}
 
-		win.Clear(colornames.Black)
+		win.Clear(colornames.Grey)
 		imd.Clear()
 		v.Draw()
 		imd.Draw(win)

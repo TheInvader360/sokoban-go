@@ -5,15 +5,29 @@ import (
 )
 
 type Controller struct {
-	m *model.Model
+	m  *model.Model
+	lm *LevelManager
 }
 
 // NewController - Creates a controller
 func NewController(m *model.Model) *Controller {
 	c := Controller{
-		m: m,
+		m:  m,
+		lm: NewLevelManager(),
 	}
+
 	return &c
+}
+
+func (c *Controller) SkipLevel() {
+	c.lm.NextLevel()
+	l := c.lm.GetCurrentLevel()
+	c.m.Board = model.NewBoard(l.MapData, l.Width, l.Height)
+}
+
+func (c *Controller) RestartLevel() {
+	l := c.lm.GetCurrentLevel()
+	c.m.Board = model.NewBoard(l.MapData, l.Width, l.Height)
 }
 
 func (c *Controller) TryMovePlayerUp() {

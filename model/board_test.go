@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewBoard(t *testing.T) {
+func TestBoard(t *testing.T) {
 	mapData := "" +
 		" ###" +
 		"@$.$" +
