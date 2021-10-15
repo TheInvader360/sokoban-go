@@ -3,6 +3,7 @@ package controller
 import (
 	"testing"
 
+	"github.com/TheInvader360/sokoban-go/direction"
 	"github.com/TheInvader360/sokoban-go/model"
 	"github.com/stretchr/testify/assert"
 )
@@ -23,7 +24,7 @@ func TestSkipAndRestartLevel(t *testing.T) {
 	assert.True(t, m.Board.Player.X == 1)
 
 	// move player away from start position
-	c.TryMovePlayerRight()
+	c.TryMovePlayer(direction.R)
 	assert.False(t, m.Board.Player.X == 1)
 
 	// restart level - level 1, player back at start position
@@ -34,33 +35,76 @@ func TestSkipAndRestartLevel(t *testing.T) {
 
 func TestTryMovePlayer(t *testing.T) {
 	mapData := "" +
-		"  " +
-		" @"
-	b := model.NewBoard(mapData, 2, 2)
+		"####" +
+		"#  #" +
+		"# @#" +
+		"####"
+	b := model.NewBoard(mapData, 4, 4)
 	m := model.Model{Board: b}
 	c := Controller{m: &m}
 
 	// start position
+	assert.Equal(t, 2, b.Player.X)
+	assert.Equal(t, 2, b.Player.Y)
+
+	// move up (first attempt succeeds, second attempt fails)
+	c.TryMovePlayer(direction.U)
+	assert.Equal(t, 2, b.Player.X)
+	assert.Equal(t, 1, b.Player.Y)
+	c.TryMovePlayer(direction.U)
+	assert.Equal(t, 2, b.Player.X)
+	assert.Equal(t, 1, b.Player.Y)
+
+	// move left (first attempt succeeds, second attempt fails)
+	c.TryMovePlayer(direction.L)
+	assert.Equal(t, 1, b.Player.X)
+	assert.Equal(t, 1, b.Player.Y)
+	c.TryMovePlayer(direction.L)
 	assert.Equal(t, 1, b.Player.X)
 	assert.Equal(t, 1, b.Player.Y)
 
-	// move up
-	c.TryMovePlayerUp()
+	// move down (first attempt succeeds, second attempt fails)
+	c.TryMovePlayer(direction.D)
 	assert.Equal(t, 1, b.Player.X)
-	assert.Equal(t, 0, b.Player.Y)
+	assert.Equal(t, 2, b.Player.Y)
+	c.TryMovePlayer(direction.D)
+	assert.Equal(t, 1, b.Player.X)
+	assert.Equal(t, 2, b.Player.Y)
 
-	// move left
-	c.TryMovePlayerLeft()
-	assert.Equal(t, 0, b.Player.X)
-	assert.Equal(t, 0, b.Player.Y)
+	// move right (first attempt succeeds, second attempt fails)
+	c.TryMovePlayer(direction.R)
+	assert.Equal(t, 2, b.Player.X)
+	assert.Equal(t, 2, b.Player.Y)
+	c.TryMovePlayer(direction.R)
+	assert.Equal(t, 2, b.Player.X)
+	assert.Equal(t, 2, b.Player.Y)
 
-	// move down
-	c.TryMovePlayerDown()
-	assert.Equal(t, 0, b.Player.X)
+	mapData = "" +
+		"#######" +
+		"#$@$ $#" +
+		"#######"
+	b = model.NewBoard(mapData, 7, 3)
+	m = model.Model{Board: b}
+	c = Controller{m: &m}
+
+	// start position
+	assert.Equal(t, 2, b.Player.X)
 	assert.Equal(t, 1, b.Player.Y)
 
-	// move right
-	c.TryMovePlayerRight()
-	assert.Equal(t, 1, b.Player.X)
+	// try move left (fail: can't push box into wall)
+	c.TryMovePlayer(direction.L)
+	assert.Equal(t, 2, b.Player.X)
+	assert.Equal(t, 1, b.Player.Y)
+
+	// try move right (success: box pushed to the right)
+	c.TryMovePlayer(direction.R)
+	assert.Equal(t, 3, b.Player.X)
+	assert.Equal(t, 1, b.Player.Y)
+	assert.False(t, b.Get(3, 1).Box)
+	assert.True(t, b.Get(4, 1).Box)
+
+	// try move right (fail: can't push box into other box)
+	c.TryMovePlayer(direction.R)
+	assert.Equal(t, 3, b.Player.X)
 	assert.Equal(t, 1, b.Player.Y)
 }

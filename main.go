@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/TheInvader360/sokoban-go/controller"
+	"github.com/TheInvader360/sokoban-go/direction"
 	"github.com/TheInvader360/sokoban-go/model"
 	"github.com/TheInvader360/sokoban-go/view"
 	"github.com/faiface/pixel"
@@ -44,22 +45,22 @@ func run() {
 		// Note: JustPressed() is a cleaner way to achieve this, but Pressed() more closely matches the Jack OS API
 		if win.Pressed(pixelgl.KeyUp) {
 			if lastKey != pixelgl.KeyUp {
-				c.TryMovePlayerUp()
+				c.TryMovePlayer(direction.U)
 			}
 			lastKey = pixelgl.KeyUp
 		} else if win.Pressed(pixelgl.KeyDown) {
 			if lastKey != pixelgl.KeyDown {
-				c.TryMovePlayerDown()
+				c.TryMovePlayer(direction.D)
 			}
 			lastKey = pixelgl.KeyDown
 		} else if win.Pressed(pixelgl.KeyLeft) {
 			if lastKey != pixelgl.KeyLeft {
-				c.TryMovePlayerLeft()
+				c.TryMovePlayer(direction.L)
 			}
 			lastKey = pixelgl.KeyLeft
 		} else if win.Pressed(pixelgl.KeyRight) {
 			if lastKey != pixelgl.KeyRight {
-				c.TryMovePlayerRight()
+				c.TryMovePlayer(direction.R)
 			}
 			lastKey = pixelgl.KeyRight
 		} else if win.Pressed(pixelgl.KeyR) {
