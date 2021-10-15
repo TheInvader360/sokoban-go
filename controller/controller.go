@@ -22,7 +22,7 @@ func NewController(m *model.Model) *Controller {
 	return &c
 }
 
-func (c *Controller) SkipLevel() {
+func (c *Controller) StartNextLevel() {
 	c.lm.NextLevel()
 	l := c.lm.GetCurrentLevel()
 	c.m.Board = model.NewBoard(l.MapData, l.Width, l.Height)
@@ -73,6 +73,9 @@ func (c *Controller) TryMovePlayer(dir direction.Direction) {
 				c.m.Board.Player.X = targetX
 				c.m.Board.Player.Y = targetY
 				fmt.Printf("%v: Player moved (push)\n", dir)
+				if c.m.Board.IsComplete() {
+					c.StartNextLevel()
+				}
 			}
 		} else {
 			c.m.Board.Player.X = targetX

@@ -34,7 +34,7 @@ func run() {
 	v := view.NewView(m, imd, width, height)
 	c := controller.NewController(m)
 	lastKey := pixelgl.KeyUnknown
-	c.SkipLevel()
+	c.StartNextLevel()
 
 	for !win.Closed() {
 		if win.Pressed(pixelgl.KeyEscape) {
@@ -70,7 +70,7 @@ func run() {
 			lastKey = pixelgl.KeyR
 		} else if win.Pressed(pixelgl.KeyS) {
 			if lastKey != pixelgl.KeyS {
-				c.SkipLevel()
+				c.StartNextLevel()
 			}
 			lastKey = pixelgl.KeyS
 		} else {

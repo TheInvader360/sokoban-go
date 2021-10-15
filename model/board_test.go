@@ -58,3 +58,19 @@ func TestBoard(t *testing.T) {
 	assert.True(t, b.Get(1, 0).Box)
 	assert.True(t, b.Get(2, 0).Box)
 }
+
+func TestIsComplete(t *testing.T) {
+	mapData := "" +
+		"#####" +
+		"#@$.#" +
+		"#####"
+	b := NewBoard(mapData, 5, 3)
+	assert.False(t, b.IsComplete())
+
+	mapData = "" +
+		"#####" +
+		"# @*#" +
+		"#####"
+	b = NewBoard(mapData, 5, 3)
+	assert.True(t, b.IsComplete())
+}

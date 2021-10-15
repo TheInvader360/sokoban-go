@@ -46,3 +46,12 @@ func NewBoard(mapData string, boardWidth, boardHeight int) *Board {
 func (b *Board) Get(x, y int) *Cell {
 	return &b.Cells[(y*b.Width)+x]
 }
+
+func (b *Board) IsComplete() bool {
+	for _, cell := range b.Cells {
+		if cell.TypeOf == CellTypeGoal && !cell.Box {
+			return false
+		}
+	}
+	return true
+}

@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSkipAndRestartLevel(t *testing.T) {
+func TestStartNextLevelAndRestartLevel(t *testing.T) {
 	m := model.Model{}
 	c := NewController(&m)
 	assert.IsType(t, &Controller{}, c)
@@ -17,8 +17,8 @@ func TestSkipAndRestartLevel(t *testing.T) {
 	assert.Equal(t, 0, c.lm.CurrentLevelNumber)
 	assert.Equal(t, "", c.lm.GetCurrentLevel().MapData)
 
-	// skip level - level 1, player at start position
-	c.SkipLevel()
+	// start next level - level 1, player at start position
+	c.StartNextLevel()
 	assert.Equal(t, 1, c.lm.CurrentLevelNumber)
 	assert.Equal(t, "########@ $ .########", c.lm.GetCurrentLevel().MapData)
 	assert.True(t, m.Board.Player.X == 1)
@@ -81,30 +81,48 @@ func TestTryMovePlayer(t *testing.T) {
 
 	mapData = "" +
 		"#######" +
+		"#.  ..#" +
 		"#$@$ $#" +
+		"#     #" +
 		"#######"
-	b = model.NewBoard(mapData, 7, 3)
+	b = model.NewBoard(mapData, 7, 5)
 	m = model.Model{Board: b}
 	c = Controller{m: &m}
 
 	// start position
 	assert.Equal(t, 2, b.Player.X)
-	assert.Equal(t, 1, b.Player.Y)
+	assert.Equal(t, 2, b.Player.Y)
 
 	// try move left (fail: can't push box into wall)
 	c.TryMovePlayer(direction.L)
 	assert.Equal(t, 2, b.Player.X)
-	assert.Equal(t, 1, b.Player.Y)
+	assert.Equal(t, 2, b.Player.Y)
 
 	// try move right (success: box pushed to the right)
 	c.TryMovePlayer(direction.R)
 	assert.Equal(t, 3, b.Player.X)
-	assert.Equal(t, 1, b.Player.Y)
-	assert.False(t, b.Get(3, 1).Box)
-	assert.True(t, b.Get(4, 1).Box)
+	assert.Equal(t, 2, b.Player.Y)
+	assert.False(t, b.Get(3, 2).Box)
+	assert.True(t, b.Get(4, 2).Box)
 
 	// try move right (fail: can't push box into other box)
 	c.TryMovePlayer(direction.R)
 	assert.Equal(t, 3, b.Player.X)
-	assert.Equal(t, 1, b.Player.Y)
+	assert.Equal(t, 2, b.Player.Y)
+
+	/*
+		// solve
+		c.TryMovePlayer(direction.D)
+		c.TryMovePlayer(direction.R)
+		c.TryMovePlayer(direction.U)
+		c.TryMovePlayer(direction.D)
+		c.TryMovePlayer(direction.R)
+		c.TryMovePlayer(direction.U)
+		c.TryMovePlayer(direction.D)
+		c.TryMovePlayer(direction.L)
+		c.TryMovePlayer(direction.L)
+		c.TryMovePlayer(direction.L)
+		c.TryMovePlayer(direction.L)
+		c.TryMovePlayer(direction.U)
+	*/
 }
