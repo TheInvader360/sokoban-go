@@ -1,8 +1,8 @@
 package controller
 
 type LevelManager struct {
-	CurrentLevelNumber int
-	Levels             []Level
+	currentLevelNumber int
+	levels             []Level
 }
 
 type Level struct {
@@ -14,7 +14,7 @@ type Level struct {
 func NewLevelManager() *LevelManager {
 	lm := LevelManager{}
 
-	lm.Levels = []Level{
+	lm.levels = []Level{
 		{},
 		{
 			Width:  7,
@@ -25,33 +25,60 @@ func NewLevelManager() *LevelManager {
 				"#######",
 		},
 		{
-			Width:  9,
-			Height: 9,
+			Width:  3,
+			Height: 7,
 			MapData: "" +
-				"#########" +
-				"#    ..*#" +
-				"# # #.#.#" +
-				"# #  ...#" +
-				"# $$$ # #" +
-				"# $@$   #" +
-				"#  $$## #" +
-				"#       #" +
-				"#########",
+				"###" +
+				"#.#" +
+				"#$#" +
+				"#@#" +
+				"#$#" +
+				"#.#" +
+				"###",
 		},
+		/*
+			{
+				Width:  9,
+				Height: 9,
+				MapData: "" +
+					"#########" +
+					"#    ..*#" +
+					"# # #.#.#" +
+					"# #  ...#" +
+					"# $$$ # #" +
+					"# $@$   #" +
+					"#  $$## #" +
+					"#       #" +
+					"#########",
+			},
+		*/
 	}
 
 	return &lm
 }
 
-func (lm *LevelManager) NextLevel() {
-	lm.CurrentLevelNumber++
-	// Loop back round to the first level
-	// Note: "> len(Levels)" is a safer way to achieve this, but this approach better suits the Jack OS API
-	if lm.CurrentLevelNumber > 2 {
-		lm.CurrentLevelNumber = 1
-	}
+// GetCurrentLevelNumber - Returns the current level number
+func (lm *LevelManager) GetCurrentLevelNumber() int {
+	return lm.currentLevelNumber
 }
 
+// GetCurrentLevel - Returns the current level
 func (lm *LevelManager) GetCurrentLevel() *Level {
-	return &lm.Levels[lm.CurrentLevelNumber]
+	return &lm.levels[lm.currentLevelNumber]
+}
+
+// HasNextLevel - Returns true if the current level is not the last
+func (lm *LevelManager) HasNextLevel() bool {
+	// Note: len(levels) is a safer way to achieve this, but this approach better suits the Jack OS API
+	return lm.currentLevelNumber < 2
+}
+
+// ProgressToNextLevel - Increments the current level
+func (lm *LevelManager) ProgressToNextLevel() {
+	lm.currentLevelNumber++
+}
+
+// Reset - Resets the level manager
+func (lm *LevelManager) Reset() {
+	lm.currentLevelNumber = 0
 }

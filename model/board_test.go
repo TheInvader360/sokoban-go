@@ -22,8 +22,8 @@ func TestBoard(t *testing.T) {
 	assert.Equal(t, 1, b.Player.Y)
 
 	// box locations
-	assert.True(t, b.Get(1, 1).Box)
-	assert.True(t, b.Get(3, 1).Box)
+	assert.True(t, b.Get(1, 1).HasBox)
+	assert.True(t, b.Get(3, 1).HasBox)
 
 	// top left
 	assert.Equal(t, CellTypeNone, b.Get(0, 0).TypeOf)
@@ -54,9 +54,9 @@ func TestBoard(t *testing.T) {
 	assert.Equal(t, CellTypeGoal, b.Get(0, 0).TypeOf)
 	assert.Equal(t, CellTypeNone, b.Get(1, 0).TypeOf)
 	assert.Equal(t, CellTypeGoal, b.Get(2, 0).TypeOf)
-	assert.False(t, b.Get(0, 0).Box)
-	assert.True(t, b.Get(1, 0).Box)
-	assert.True(t, b.Get(2, 0).Box)
+	assert.False(t, b.Get(0, 0).HasBox)
+	assert.True(t, b.Get(1, 0).HasBox)
+	assert.True(t, b.Get(2, 0).HasBox)
 }
 
 func TestIsComplete(t *testing.T) {

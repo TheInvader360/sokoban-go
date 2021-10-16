@@ -1,7 +1,16 @@
 package model
 
+type state int
+
+const (
+	StatePlaying state = iota
+	StateLevelComplete
+	StateGameComplete
+)
+
 type Model struct {
 	Board *Board
+	State state
 }
 
 // NewModel - Creates a model
