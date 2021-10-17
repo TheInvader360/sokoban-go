@@ -153,7 +153,7 @@ func TestStateLevelComplete(t *testing.T) {
 func TestStateGameComplete(t *testing.T) {
 	m := model.Model{}
 	m.State = model.StateLevelComplete
-	c := Controller{m: &m, lm: &LevelManager{levels: []Level{{}, {}, {}}, currentLevelNumber: 3}}
+	c := Controller{m: &m, lm: &LevelManager{levels: []Level{{}, {}, {}}, currentLevelNumber: 4}}
 
 	// simulate completion of the last level
 	c.tryStartNextLevel()
@@ -161,7 +161,7 @@ func TestStateGameComplete(t *testing.T) {
 
 	// input other than the space key has no effect
 	c.HandleInput(pixelgl.KeyUp)
-	assert.Equal(t, 3, c.lm.currentLevelNumber)
+	assert.Equal(t, 4, c.lm.currentLevelNumber)
 	assert.Equal(t, model.StateGameComplete, m.State)
 
 	// press the space key to start a new game

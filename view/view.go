@@ -20,16 +20,18 @@ const (
 	SpriteWall
 	SpriteGoalAndPlayer
 	SpriteGoalAndBox
+	SpriteLogo
 )
 
 type View struct {
-	m       *model.Model
-	win     *pixelgl.Window
-	sprites []*pixel.Sprite
+	m           *model.Model
+	win         *pixelgl.Window
+	scaleFactor float64
+	sprites     []*pixel.Sprite
 }
 
 // NewView - Creates a view
-func NewView(m *model.Model, win *pixelgl.Window) *View {
+func NewView(m *model.Model, win *pixelgl.Window, scaleFactor float64) *View {
 	file, err := os.Open("assets/spritesheet.png")
 	if err != nil {
 		panic(err)
@@ -42,15 +44,17 @@ func NewView(m *model.Model, win *pixelgl.Window) *View {
 	pictureData := pixel.PictureDataFromImage(image)
 
 	v := View{
-		m:   m,
-		win: win,
+		m:           m,
+		win:         win,
+		scaleFactor: scaleFactor,
 		sprites: []*pixel.Sprite{
-			pixel.NewSprite(pictureData, pixel.R(float64(0), float64(0), float64(16), float64(16))),  // player
-			pixel.NewSprite(pictureData, pixel.R(float64(16), float64(0), float64(32), float64(16))), // box
-			pixel.NewSprite(pictureData, pixel.R(float64(32), float64(0), float64(48), float64(16))), // goal
-			pixel.NewSprite(pictureData, pixel.R(float64(48), float64(0), float64(64), float64(16))), // wall
-			pixel.NewSprite(pictureData, pixel.R(float64(64), float64(0), float64(80), float64(16))), // goal+player
-			pixel.NewSprite(pictureData, pixel.R(float64(80), float64(0), float64(96), float64(16))), // goal+box
+			pixel.NewSprite(pictureData, pixel.R(float64(0), float64(0), float64(16), float64(16))),   // player
+			pixel.NewSprite(pictureData, pixel.R(float64(16), float64(0), float64(32), float64(16))),  // box
+			pixel.NewSprite(pictureData, pixel.R(float64(32), float64(0), float64(48), float64(16))),  // goal
+			pixel.NewSprite(pictureData, pixel.R(float64(48), float64(0), float64(64), float64(16))),  // wall
+			pixel.NewSprite(pictureData, pixel.R(float64(64), float64(0), float64(80), float64(16))),  // goal+player
+			pixel.NewSprite(pictureData, pixel.R(float64(80), float64(0), float64(96), float64(16))),  // goal+box
+			pixel.NewSprite(pictureData, pixel.R(float64(0), float64(16), float64(112), float64(64))), // logo
 		},
 	}
 
@@ -68,25 +72,29 @@ func (v *View) Draw() {
 		v.win.Clear(colornames.Red)
 	}
 
-	v.drawSprite(SpritePlayer, float64(v.m.Board.Player.X), float64(v.m.Board.Player.Y))
+	v.drawLogoSprite()
+
+	boardOffsetX := ((23 - v.m.Board.Width) / 2) + 1
+	boardOffsetY := ((14 - v.m.Board.Height) / 2) + 1
+	v.drawBoardSprite(SpritePlayer, float64(v.m.Board.Player.X), float64(v.m.Board.Player.Y), float64(boardOffsetX), float64(boardOffsetY))
 	for y := 0; y < v.m.Board.Height; y++ {
 		for x := 0; x < v.m.Board.Width; x++ {
 			cell := v.m.Board.Get(x, y)
 			switch cell.TypeOf {
 			case model.CellTypeNone:
 				if cell.HasBox {
-					v.drawSprite(SpriteBox, float64(x), float64(y))
+					v.drawBoardSprite(SpriteBox, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
 				}
 			case model.CellTypeGoal:
 				if cell.HasBox {
-					v.drawSprite(SpriteGoalAndBox, float64(x), float64(y))
+					v.drawBoardSprite(SpriteGoalAndBox, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
 				} else if v.m.Board.Player.X == x && v.m.Board.Player.Y == y {
-					v.drawSprite(SpriteGoalAndPlayer, float64(x), float64(y))
+					v.drawBoardSprite(SpriteGoalAndPlayer, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
 				} else {
-					v.drawSprite(SpriteGoal, float64(x), float64(y))
+					v.drawBoardSprite(SpriteGoal, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
 				}
 			case model.CellTypeWall:
-				v.drawSprite(SpriteWall, float64(x), float64(y))
+				v.drawBoardSprite(SpriteWall, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
 			}
 		}
 	}
@@ -94,7 +102,12 @@ func (v *View) Draw() {
 	v.win.Update()
 }
 
-func (v *View) drawSprite(s spriteIndex, x, y float64) {
-	r := pixel.R(x*16, v.win.Bounds().H()-(y+1)*16, (x+1)*16, v.win.Bounds().H()-(y)*16)
+func (v *View) drawLogoSprite() {
+	r := pixel.R(float64(400)*v.scaleFactor, v.win.Bounds().H()-float64(48)*v.scaleFactor, float64(512)*v.scaleFactor, v.win.Bounds().H()-float64(0)*v.scaleFactor)
+	v.sprites[SpriteLogo].Draw(v.win, pixel.IM.ScaledXY(pixel.ZV, pixel.V(r.W()/v.sprites[SpriteLogo].Frame().W(), r.H()/v.sprites[SpriteLogo].Frame().H())).Moved(r.Center()))
+}
+
+func (v *View) drawBoardSprite(s spriteIndex, x, y, offsetX, offsetY float64) {
+	r := pixel.R((offsetX+x)*16*v.scaleFactor, v.win.Bounds().H()-(offsetY+y+1)*16*v.scaleFactor, (offsetX+x+1)*16*v.scaleFactor, v.win.Bounds().H()-(offsetY+y)*16*v.scaleFactor)
 	v.sprites[s].Draw(v.win, pixel.IM.ScaledXY(pixel.ZV, pixel.V(r.W()/v.sprites[s].Frame().W(), r.H()/v.sprites[s].Frame().H())).Moved(r.Center()))
 }

@@ -11,14 +11,15 @@ import (
 )
 
 const (
-	width  = 512
-	height = 256
+	width       = 512
+	height      = 256
+	scaleFactor = 3
 )
 
 func run() {
 	cfg := pixelgl.WindowConfig{
 		Title:  "Sokoban",
-		Bounds: pixel.R(0, 0, width, height),
+		Bounds: pixel.R(0, 0, width*scaleFactor, height*scaleFactor),
 		VSync:  true,
 	}
 	win, err := pixelgl.NewWindow(cfg)
@@ -27,7 +28,7 @@ func run() {
 	}
 
 	m := model.NewModel()
-	v := view.NewView(m, win)
+	v := view.NewView(m, win, scaleFactor)
 	c := controller.NewController(m)
 	lastKey := pixelgl.KeyUnknown
 	c.StartNewGame()
