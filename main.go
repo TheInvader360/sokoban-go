@@ -7,9 +7,7 @@ import (
 	"github.com/TheInvader360/sokoban-go/model"
 	"github.com/TheInvader360/sokoban-go/view"
 	"github.com/faiface/pixel"
-	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
-	"golang.org/x/image/colornames"
 )
 
 const (
@@ -28,9 +26,8 @@ func run() {
 		panic(err)
 	}
 
-	imd := imdraw.New(nil)
 	m := model.NewModel()
-	v := view.NewView(m, imd, width, height)
+	v := view.NewView(m, win)
 	c := controller.NewController(m)
 	lastKey := pixelgl.KeyUnknown
 	c.StartNewGame()
@@ -77,11 +74,7 @@ func run() {
 			lastKey = pixelgl.KeyUnknown
 		}
 
-		win.Clear(colornames.Grey)
-		imd.Clear()
 		v.Draw()
-		imd.Draw(win)
-		win.Update()
 
 		time.Sleep(50 * time.Millisecond)
 	}

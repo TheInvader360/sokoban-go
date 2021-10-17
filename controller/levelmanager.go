@@ -36,6 +36,15 @@ func NewLevelManager() *LevelManager {
 				"#.#" +
 				"###",
 		},
+		{
+			Width:  8,
+			Height: 4,
+			MapData: "" +
+				"########" +
+				"#.$  $.#" +
+				"#*.@$  #" +
+				"########",
+		},
 		/*
 			{
 				Width:  9,
@@ -70,7 +79,7 @@ func (lm *LevelManager) GetCurrentLevel() *Level {
 // HasNextLevel - Returns true if the current level is not the last
 func (lm *LevelManager) HasNextLevel() bool {
 	// Note: len(levels) is a safer way to achieve this, but this approach better suits the Jack OS API
-	return lm.currentLevelNumber < 2
+	return lm.currentLevelNumber < 3
 }
 
 // ProgressToNextLevel - Increments the current level
