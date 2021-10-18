@@ -17,7 +17,7 @@ type Controller struct {
 func NewController(m *model.Model) *Controller {
 	c := Controller{
 		m:  m,
-		lm: NewLevelManager(),
+		lm: NewLevelManager(false),
 	}
 
 	return &c

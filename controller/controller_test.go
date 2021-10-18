@@ -16,17 +16,17 @@ func TestStartNewGameAndRestartLevel(t *testing.T) {
 	// start new game - level 1, player at start position
 	c.StartNewGame()
 	assert.Equal(t, 1, c.lm.GetCurrentLevelNumber())
-	assert.Equal(t, "########@ $ .########", c.lm.GetCurrentLevel().MapData)
-	assert.True(t, m.Board.Player.X == 1)
+	assert.Equal(t, "  ###     #.#     # #######$ $.##. $@#######$#     #.#     ###  ", c.lm.GetCurrentLevel().MapData)
+	assert.True(t, m.Board.Player.Y == 4)
 
 	// move player away from start position
-	c.HandleInput(pixelgl.KeyRight)
-	assert.False(t, m.Board.Player.X == 1)
+	c.HandleInput(pixelgl.KeyUp)
+	assert.False(t, m.Board.Player.Y == 4)
 
 	// restart level - level 1, player back at start position
 	c.HandleInput(pixelgl.KeyR)
-	assert.Equal(t, "########@ $ .########", c.lm.GetCurrentLevel().MapData)
-	assert.True(t, m.Board.Player.X == 1)
+	assert.Equal(t, "  ###     #.#     # #######$ $.##. $@#######$#     #.#     ###  ", c.lm.GetCurrentLevel().MapData)
+	assert.True(t, m.Board.Player.Y == 4)
 }
 
 func TestPlayerMovementAndWallCollisions(t *testing.T) {
@@ -137,7 +137,8 @@ func TestBoardCompletion(t *testing.T) {
 func TestStateLevelComplete(t *testing.T) {
 	m := model.Model{}
 	m.State = model.StateLevelComplete
-	c := Controller{m: &m, lm: &LevelManager{levels: []Level{{}, {}, {}}, currentLevelNumber: 1}}
+	c := Controller{m: &m, lm: NewLevelManager(true)}
+	c.lm.ProgressToNextLevel()
 
 	// input other than the space key has no effect
 	c.HandleInput(pixelgl.KeyUp)
@@ -153,7 +154,10 @@ func TestStateLevelComplete(t *testing.T) {
 func TestStateGameComplete(t *testing.T) {
 	m := model.Model{}
 	m.State = model.StateLevelComplete
-	c := Controller{m: &m, lm: &LevelManager{levels: []Level{{}, {}, {}}, currentLevelNumber: 4}}
+	c := Controller{m: &m, lm: NewLevelManager(true)}
+	c.lm.ProgressToNextLevel()
+	c.lm.ProgressToNextLevel()
+	c.lm.ProgressToNextLevel()
 
 	// simulate completion of the last level
 	c.tryStartNextLevel()
@@ -161,7 +165,7 @@ func TestStateGameComplete(t *testing.T) {
 
 	// input other than the space key has no effect
 	c.HandleInput(pixelgl.KeyUp)
-	assert.Equal(t, 4, c.lm.currentLevelNumber)
+	assert.Equal(t, 3, c.lm.currentLevelNumber)
 	assert.Equal(t, model.StateGameComplete, m.State)
 
 	// press the space key to start a new game

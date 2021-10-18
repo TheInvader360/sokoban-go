@@ -11,75 +11,256 @@ type Level struct {
 }
 
 // NewLevelManager - Creates a level manager
-func NewLevelManager() *LevelManager {
+func NewLevelManager(testMode bool) *LevelManager {
 	lm := LevelManager{}
 
-	lm.levels = []Level{
-		{},
-		{
-			Width:  7,
-			Height: 3,
-			MapData: "" +
-				"#######" +
-				"#@ $ .#" +
-				"#######",
-		},
-		{
-			Width:  3,
-			Height: 7,
-			MapData: "" +
-				"###" +
-				"#.#" +
-				"#$#" +
-				"#@#" +
-				"#$#" +
-				"#.#" +
-				"###",
-		},
-		{
-			Width:  8,
-			Height: 4,
-			MapData: "" +
-				"########" +
-				"#.$  $.#" +
-				"#*.@$  #" +
-				"########",
-		},
-		{
-			Width:  23,
-			Height: 14,
-			MapData: "" +
-				"#######################" +
-				"#                    .#" +
-				"#                    .#" +
-				"#                    .#" +
-				"#        $@           #" +
-				"#        $$           #" +
-				"#                     #" +
-				"#                     #" +
-				"#                     #" +
-				"#                     #" +
-				"#                     #" +
-				"#                     #" +
-				"#                     #" +
-				"#######################",
-		},
-		/*
+	if testMode {
+		lm.levels = []Level{
+			{},
 			{
+				Width:  7,
+				Height: 3,
+				MapData: "" +
+					"#######" +
+					"#@ $ .#" +
+					"#######",
+			},
+			{
+				Width:  3,
+				Height: 7,
+				MapData: "" +
+					"###" +
+					"#.#" +
+					"#$#" +
+					"#@#" +
+					"#$#" +
+					"#.#" +
+					"###",
+			},
+			{
+				Width:  8,
+				Height: 4,
+				MapData: "" +
+					"########" +
+					"#.$  $.#" +
+					"#*.@$  #" +
+					"########",
+			},
+		}
+	} else {
+		lm.levels = []Level{
+			{},
+			{
+				// Level 1
+				Width:  8,
+				Height: 8,
+				MapData: "" +
+					"  ###   " +
+					"  #.#   " +
+					"  # ####" +
+					"###$ $.#" +
+					"#. $@###" +
+					"####$#  " +
+					"   #.#  " +
+					"   ###  ",
+			},
+			{
+				// Level 2
 				Width:  9,
 				Height: 9,
 				MapData: "" +
-					"#########" +
-					"#    ..*#" +
-					"# # #.#.#" +
-					"# #  ...#" +
-					"# $$$ # #" +
-					"# $@$   #" +
-					"#  $$## #" +
-					"#       #" +
-					"#########",
+					"#####    " +
+					"#   #    " +
+					"# $@# ###" +
+					"# $$# #.#" +
+					"### ###.#" +
+					" ##    .#" +
+					" #   #  #" +
+					" #   ####" +
+					" #####   ",
 			},
-		*/
+			{
+				// Level 3
+				Width:  6,
+				Height: 8,
+				MapData: "" +
+					" #### " +
+					"##  # " +
+					"# @$# " +
+					"##$ ##" +
+					"## $ #" +
+					"#.$  #" +
+					"#..*.#" +
+					"######",
+			},
+			{
+				// Level 4
+				Width:  8,
+				Height: 8,
+				MapData: "" +
+					" ####   " +
+					" #@ ### " +
+					" # $  # " +
+					"### # ##" +
+					"#.# #  #" +
+					"#.$  # #" +
+					"#.   $ #" +
+					"########",
+			},
+			{
+				// Level 5
+				Width:  8,
+				Height: 7,
+				MapData: "" +
+					"  ######" +
+					"  #    #" +
+					"###$$$ #" +
+					"#@ $.. #" +
+					"# $...##" +
+					"####  # " +
+					"   #### ",
+			},
+			/*
+				{
+					// Level 6
+					Width:  8,
+					Height: 7,
+					MapData: "" +
+						"########" +
+						"#@   $.#" +
+						"#      #" +
+						"#      #" +
+						"#      #" +
+						"#      #" +
+						"########",
+				},
+				{
+					// Level 7
+					Width:  8,
+					Height: 8,
+					MapData: "" +
+						"########" +
+						"#@   $.#" +
+						"#      #" +
+						"#      #" +
+						"#      #" +
+						"#      #" +
+						"#      #" +
+						"########",
+				},
+				{
+					// Level 8
+					Width:  8,
+					Height: 7,
+					MapData: "" +
+						"########" +
+						"#@   $.#" +
+						"#      #" +
+						"#      #" +
+						"#      #" +
+						"#      #" +
+						"########",
+				},
+				{
+					// Level 9
+					Width:  9,
+					Height: 7,
+					MapData: "" +
+						"#########" +
+						"#@    $.#" +
+						"#       #" +
+						"#       #" +
+						"#       #" +
+						"#       #" +
+						"#########",
+				},
+				{
+					// Level 10
+					Width:  7,
+					Height: 8,
+					MapData: "" +
+						"#######" +
+						"#@  $.#" +
+						"#     #" +
+						"#     #" +
+						"#     #" +
+						"#     #" +
+						"#     #" +
+						"#######",
+				},
+				{
+					// Level 11
+					Width:  8,
+					Height: 8,
+					MapData: "" +
+						"########" +
+						"#@   $.#" +
+						"#      #" +
+						"#      #" +
+						"#      #" +
+						"#      #" +
+						"#      #" +
+						"########",
+				},
+				{
+					// Level 12
+					Width:  6,
+					Height: 9,
+					MapData: "" +
+						"######" +
+						"#@ $.#" +
+						"#    #" +
+						"#    #" +
+						"#    #" +
+						"#    #" +
+						"#    #" +
+						"#    #" +
+						"######",
+				},
+				{
+					// Level 13
+					Width:  7,
+					Height: 9,
+					MapData: "" +
+						"#######" +
+						"#@  $.#" +
+						"#     #" +
+						"#     #" +
+						"#     #" +
+						"#     #" +
+						"#     #" +
+						"#     #" +
+						"#######",
+				},
+				{
+					// Level 14
+					Width:  9,
+					Height: 8,
+					MapData: "" +
+						"#########" +
+						"#@    $.#" +
+						"#       #" +
+						"#       #" +
+						"#       #" +
+						"#       #" +
+						"#       #" +
+						"#########",
+				},
+				{
+					// Level 15
+					Width:  8,
+					Height: 7,
+					MapData: "" +
+						"########" +
+						"#@   $.#" +
+						"#      #" +
+						"#      #" +
+						"#      #" +
+						"#      #" +
+						"########",
+				},
+			*/
+		}
 	}
 
 	return &lm
@@ -97,8 +278,8 @@ func (lm *LevelManager) GetCurrentLevel() *Level {
 
 // HasNextLevel - Returns true if the current level is not the last
 func (lm *LevelManager) HasNextLevel() bool {
-	// Note: len(levels) is a safer way to achieve this, but this approach better suits the Jack OS API
-	return lm.currentLevelNumber < 4
+	// Note: len(levels) is a safer way to achieve this, but the hard coded approach better suits the Jack OS API
+	return lm.currentLevelNumber < len(lm.levels)-1 //15
 }
 
 // ProgressToNextLevel - Increments the current level
