@@ -9,14 +9,14 @@ import (
 )
 
 func TestStartNewGameAndRestartLevel(t *testing.T) {
-	m := model.Model{}
+	m := model.Model{LM: model.NewLevelManager(false)}
 	c := NewController(&m)
 	assert.IsType(t, &Controller{}, c)
 
 	// start new game - level 1, player at start position
 	c.StartNewGame()
-	assert.Equal(t, 1, c.lm.GetCurrentLevelNumber())
-	assert.Equal(t, "  ###     #.#     # #######$ $.##. $@#######$#     #.#     ###  ", c.lm.GetCurrentLevel().MapData)
+	assert.Equal(t, 1, m.LM.GetCurrentLevelNumber())
+	assert.Equal(t, "  ###     #.#     # #######$ $.##. $@#######$#     #.#     ###  ", m.LM.GetCurrentLevel().MapData)
 	assert.True(t, m.Board.Player.Y == 4)
 
 	// move player away from start position
@@ -25,7 +25,7 @@ func TestStartNewGameAndRestartLevel(t *testing.T) {
 
 	// restart level - level 1, player back at start position
 	c.HandleInput(pixelgl.KeyR)
-	assert.Equal(t, "  ###     #.#     # #######$ $.##. $@#######$#     #.#     ###  ", c.lm.GetCurrentLevel().MapData)
+	assert.Equal(t, "  ###     #.#     # #######$ $.##. $@#######$#     #.#     ###  ", m.LM.GetCurrentLevel().MapData)
 	assert.True(t, m.Board.Player.Y == 4)
 }
 
@@ -135,29 +135,29 @@ func TestBoardCompletion(t *testing.T) {
 }
 
 func TestStateLevelComplete(t *testing.T) {
-	m := model.Model{}
+	m := model.Model{LM: model.NewLevelManager(true)}
 	m.State = model.StateLevelComplete
-	c := Controller{m: &m, lm: NewLevelManager(true)}
-	c.lm.ProgressToNextLevel()
+	c := Controller{m: &m}
+	m.LM.ProgressToNextLevel()
 
 	// input other than the space key has no effect
 	c.HandleInput(pixelgl.KeyUp)
-	assert.Equal(t, 1, c.lm.currentLevelNumber)
+	assert.Equal(t, 1, m.LM.GetCurrentLevelNumber())
 	assert.Equal(t, model.StateLevelComplete, m.State)
 
 	// press the space key to start the next level
 	c.HandleInput(pixelgl.KeySpace)
-	assert.Equal(t, 2, c.lm.currentLevelNumber)
+	assert.Equal(t, 2, m.LM.GetCurrentLevelNumber())
 	assert.Equal(t, model.StatePlaying, m.State)
 }
 
 func TestStateGameComplete(t *testing.T) {
-	m := model.Model{}
+	m := model.Model{LM: model.NewLevelManager(true)}
 	m.State = model.StateLevelComplete
-	c := Controller{m: &m, lm: NewLevelManager(true)}
-	c.lm.ProgressToNextLevel()
-	c.lm.ProgressToNextLevel()
-	c.lm.ProgressToNextLevel()
+	c := Controller{m: &m}
+	m.LM.ProgressToNextLevel()
+	m.LM.ProgressToNextLevel()
+	m.LM.ProgressToNextLevel()
 
 	// simulate completion of the last level
 	c.tryStartNextLevel()
@@ -165,11 +165,11 @@ func TestStateGameComplete(t *testing.T) {
 
 	// input other than the space key has no effect
 	c.HandleInput(pixelgl.KeyUp)
-	assert.Equal(t, 3, c.lm.currentLevelNumber)
+	assert.Equal(t, 3, m.LM.GetCurrentLevelNumber())
 	assert.Equal(t, model.StateGameComplete, m.State)
 
 	// press the space key to start a new game
 	c.HandleInput(pixelgl.KeySpace)
-	assert.Equal(t, 1, c.lm.currentLevelNumber)
+	assert.Equal(t, 1, m.LM.GetCurrentLevelNumber())
 	assert.Equal(t, model.StatePlaying, m.State)
 }

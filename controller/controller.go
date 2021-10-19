@@ -9,15 +9,13 @@ import (
 )
 
 type Controller struct {
-	m  *model.Model
-	lm *LevelManager
+	m *model.Model
 }
 
 // NewController - Creates a controller
 func NewController(m *model.Model) *Controller {
 	c := Controller{
-		m:  m,
-		lm: NewLevelManager(false),
+		m: m,
 	}
 
 	return &c
@@ -25,7 +23,7 @@ func NewController(m *model.Model) *Controller {
 
 // StartNewGame - Starts a new game at level 1
 func (c *Controller) StartNewGame() {
-	c.lm.Reset()
+	c.m.LM.Reset()
 	c.tryStartNextLevel()
 }
 
@@ -110,12 +108,12 @@ func (c *Controller) tryMovePlayer(dir direction.Direction) {
 
 // tryStartNextLevel - Starts the next level if the current one isn't the last, else sets game state to game complete
 func (c *Controller) tryStartNextLevel() {
-	if c.lm.HasNextLevel() {
-		c.lm.ProgressToNextLevel()
-		l := c.lm.GetCurrentLevel()
+	if c.m.LM.HasNextLevel() {
+		c.m.LM.ProgressToNextLevel()
+		l := c.m.LM.GetCurrentLevel()
 		c.m.Board = model.NewBoard(l.MapData, l.Width, l.Height)
 		c.m.State = model.StatePlaying
-		fmt.Printf("Start level %d\n", c.lm.GetCurrentLevelNumber())
+		fmt.Printf("Start level %d\n", c.m.LM.GetCurrentLevelNumber())
 	} else {
 		c.m.State = model.StateGameComplete
 		fmt.Print("*** GAME COMPLETE! ***\n(space key to restart)\n")
@@ -124,8 +122,8 @@ func (c *Controller) tryStartNextLevel() {
 
 // restartLevel - Resets the game board to the current level's starting state
 func (c *Controller) restartLevel() {
-	l := c.lm.GetCurrentLevel()
+	l := c.m.LM.GetCurrentLevel()
 	c.m.Board = model.NewBoard(l.MapData, l.Width, l.Height)
 	c.m.State = model.StatePlaying
-	fmt.Printf("Restart level %d\n", c.lm.GetCurrentLevelNumber())
+	fmt.Printf("Restart level %d\n", c.m.LM.GetCurrentLevelNumber())
 }

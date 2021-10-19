@@ -9,13 +9,16 @@ const (
 )
 
 type Model struct {
+	LM    *LevelManager
 	Board *Board
 	State state
 }
 
 // NewModel - Creates a model
 func NewModel() *Model {
-	m := Model{}
+	m := Model{
+		LM: NewLevelManager(false),
+	}
 
 	return &m
 }

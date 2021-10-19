@@ -1,4 +1,4 @@
-package controller
+package model
 
 type LevelManager struct {
 	currentLevelNumber int
@@ -271,6 +271,12 @@ func (lm *LevelManager) GetCurrentLevelNumber() int {
 	return lm.currentLevelNumber
 }
 
+// GetFinalLevelNumber - Returns the final level number
+func (lm *LevelManager) GetFinalLevelNumber() int {
+	// Note: len(levels) is a safer way to achieve this, but the hard coded approach better suits the Jack OS API
+	return len(lm.levels) - 1 //15
+}
+
 // GetCurrentLevel - Returns the current level
 func (lm *LevelManager) GetCurrentLevel() *Level {
 	return &lm.levels[lm.currentLevelNumber]
@@ -279,7 +285,7 @@ func (lm *LevelManager) GetCurrentLevel() *Level {
 // HasNextLevel - Returns true if the current level is not the last
 func (lm *LevelManager) HasNextLevel() bool {
 	// Note: len(levels) is a safer way to achieve this, but the hard coded approach better suits the Jack OS API
-	return lm.currentLevelNumber < len(lm.levels)-1 //15
+	return lm.currentLevelNumber < lm.GetFinalLevelNumber()
 }
 
 // ProgressToNextLevel - Increments the current level
