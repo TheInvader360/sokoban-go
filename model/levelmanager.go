@@ -50,6 +50,27 @@ func NewLevelManager(testMode bool) *LevelManager {
 	} else {
 		lm.levels = []Level{
 			{},
+			/*
+				{
+					Width:  22,
+					Height: 14,
+					MapData: "" +
+						"######################" +
+						"#                 @$.#" +
+						"#                    #" +
+						"#                    #" +
+						"#                    #" +
+						"#                    #" +
+						"#                    #" +
+						"#                    #" +
+						"#                    #" +
+						"#                    #" +
+						"#                    #" +
+						"#                    #" +
+						"#                    #" +
+						"######################",
+				},
+			*/
 			{
 				// Level 1
 				Width:  8,

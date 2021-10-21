@@ -91,52 +91,72 @@ func NewView(m *model.Model, win *pixelgl.Window, scaleFactor float64) *View {
 
 // Draw - Draws a graphical representation of the model's current state (called once per main game loop iteration)
 func (v *View) Draw() {
-	switch v.m.State {
-	case model.StatePlaying:
-		v.win.Clear(colornames.Black)
-	case model.StateLevelComplete:
-		v.win.Clear(colornames.Blue)
-	case model.StateGameComplete:
-		v.win.Clear(colornames.Red)
-	}
+	v.win.Clear(colornames.Black)
 
 	v.drawLogoSprite()
 
-	boardOffsetX := ((23 - v.m.Board.Width) / 2) + 1
-	boardOffsetY := ((14 - v.m.Board.Height) / 2) + 1
-	v.drawBoardSprite(SpritePlayer, float64(v.m.Board.Player.X), float64(v.m.Board.Player.Y), float64(boardOffsetX), float64(boardOffsetY))
-	for y := 0; y < v.m.Board.Height; y++ {
-		for x := 0; x < v.m.Board.Width; x++ {
-			cell := v.m.Board.Get(x, y)
-			switch cell.TypeOf {
-			case model.CellTypeNone:
-				if cell.HasBox {
-					v.drawBoardSprite(SpriteBox, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
+	switch v.m.State {
+	case model.StatePlaying:
+		v.drawBoard()
+		v.printString(fmt.Sprintf("Level %02d of %02d", v.m.LM.GetCurrentLevelNumber(), v.m.LM.GetFinalLevelNumber()), 48, 7)
+		v.printString("---Controls---\n\nCursors:  Move\nR:       Reset\nEscape:   Quit", 48, 17)
+	case model.StateLevelComplete:
+		v.drawBoard()
+		v.printString(fmt.Sprintf("Level %02d of %02d", v.m.LM.GetCurrentLevelNumber(), v.m.LM.GetFinalLevelNumber()), 48, 7)
+		if v.m.TickAccumulator < 10 {
+			v.printString("LEVEL COMPLETE", 48, 12)
+		}
+		v.printString("---Controls---\n\nSpace:    Next\n              \nEscape:   Quit", 48, 17)
+	case model.StateGameComplete:
+		v.printString("GAME COMPLETE!", 16, 10)
+		if v.m.TickAccumulator < 10 {
+			v.printString("CONGRATULATIONS!", 15, 12)
+		} else {
+			for y := 0; y <= 13; y++ {
+				for x := 0; x <= 21; x++ {
+					if x == 0 || x == 21 || y == 0 || y == 13 {
+						v.drawBoardSprite(SpritePlayer, float64(x), float64(y), float64(1), float64(1))
+					}
 				}
-			case model.CellTypeGoal:
-				if cell.HasBox {
-					v.drawBoardSprite(SpriteGoalAndBox, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
-				} else if v.m.Board.Player.X == x && v.m.Board.Player.Y == y {
-					v.drawBoardSprite(SpriteGoalAndPlayer, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
-				} else {
-					v.drawBoardSprite(SpriteGoal, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
-				}
-			case model.CellTypeWall:
-				v.drawBoardSprite(SpriteWall, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
 			}
 		}
+		v.printString("---Controls---\n\nSpace: Restart\n              \nEscape:   Quit", 48, 17)
 	}
-
-	//v.printString("A", 0, 0)
-	//v.printString("Z", 63, 22)
-	//v.printString(" !\"#$%&'()*+,-./\n0123456789\n:;<=>?@\nABCDEFGHIJKLMNOPQRSTUVWXYZ\n[\\]^_`\nabcdefghijklmnopqrstuvwxyz\n{|}~", 0, 0)
-	v.printString(fmt.Sprintf("Level %d/%d", v.m.LM.GetCurrentLevelNumber(), v.m.LM.GetFinalLevelNumber()), 53, 22)
 
 	v.win.Update()
 }
 
+func (v *View) drawBoard() {
+	if v.m.State != model.StateGameComplete {
+		boardOffsetX := ((22 - v.m.Board.Width) / 2) + 1
+		boardOffsetY := ((14 - v.m.Board.Height) / 2) + 1
+		v.drawBoardSprite(SpritePlayer, float64(v.m.Board.Player.X), float64(v.m.Board.Player.Y), float64(boardOffsetX), float64(boardOffsetY))
+		for y := 0; y < v.m.Board.Height; y++ {
+			for x := 0; x < v.m.Board.Width; x++ {
+				cell := v.m.Board.Get(x, y)
+				switch cell.TypeOf {
+				case model.CellTypeNone:
+					if cell.HasBox {
+						v.drawBoardSprite(SpriteBox, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
+					}
+				case model.CellTypeGoal:
+					if cell.HasBox {
+						v.drawBoardSprite(SpriteGoalAndBox, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
+					} else if v.m.Board.Player.X == x && v.m.Board.Player.Y == y {
+						v.drawBoardSprite(SpriteGoalAndPlayer, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
+					} else {
+						v.drawBoardSprite(SpriteGoal, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
+					}
+				case model.CellTypeWall:
+					v.drawBoardSprite(SpriteWall, float64(x), float64(y), float64(boardOffsetX), float64(boardOffsetY))
+				}
+			}
+		}
+	}
+}
+
 func (v *View) drawLogoSprite() {
-	r := pixel.R(float64(400)*v.scaleFactor, v.win.Bounds().H()-float64(48)*v.scaleFactor, float64(512)*v.scaleFactor, v.win.Bounds().H()-float64(0)*v.scaleFactor)
+	r := pixel.R(float64(384)*v.scaleFactor, v.win.Bounds().H()-float64(48)*v.scaleFactor, float64(496)*v.scaleFactor, v.win.Bounds().H()-float64(0)*v.scaleFactor)
 	v.sprites[SpriteLogo].Draw(v.win, pixel.IM.ScaledXY(pixel.ZV, pixel.V(r.W()/v.sprites[SpriteLogo].Frame().W(), r.H()/v.sprites[SpriteLogo].Frame().H())).Moved(r.Center()))
 }
 

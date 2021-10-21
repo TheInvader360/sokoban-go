@@ -75,6 +75,8 @@ func run() {
 			lastKey = pixelgl.KeyUnknown
 		}
 
+		m.Update()
+
 		v.Draw()
 
 		time.Sleep(50 * time.Millisecond)
